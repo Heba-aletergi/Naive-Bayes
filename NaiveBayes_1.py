@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import array
-from collections import Counter
+from collections import Counter, defaultdict
 
 
 class NaiveBayesClassifier:
@@ -18,15 +18,17 @@ class NaiveBayesClassifier:
         self.class_probabilities = self.calculate_class_probabilities(y_train, unique_classes)
 
         # Calculate feature probabilities for each class
-        self.feature_probabilities = []
+        self.feature_probabilities = defaultdict(dict)
+        
         for class_label in unique_classes:  # Iterate over each unique class
             subset_X = X_train[y_train == class_label]
-            feature_probabilities = []
+            feature_probabilities = defaultdict(dict)
             for feature_index in range(num_features):  # Iterate over each feature
-                feature_values = np.unique(X_train.iloc[:, feature_index])
-                feature_counts = self.calculate_feature_counts(subset_X.iloc[:, feature_index], feature_values)
-                feature_probabilities.append(feature_counts / len(subset_X))
-            self.feature_probabilities.append(feature_probabilities)
+                feature_values = np.unique(X_train.iloc[:, feature_index])  # get unique val for feature (feature_index)
+                feature_values_counts = self.calculate_feature_counts(subset_X.iloc[:, feature_index], feature_values)
+                #feature_probabilities.append(feature_values_counts / len(subset_X))
+                feature_probabilities[X_train.columns[feature_index]] = feature_values_counts
+            self.feature_probabilities[class_label] = feature_probabilities
 
     def calculate_class_probabilities(self, y_train, unique_classes):
         class_probabilities = {}
@@ -36,9 +38,10 @@ class NaiveBayesClassifier:
         return class_probabilities
 
     def calculate_feature_counts(self, feature_values, unique_values):
-        feature_counts = []
-        for value in unique_values:
-            feature_counts.append(np.sum(feature_values == value))
+        feature_counts = {}
+        for value in unique_values:  # Iterate over unique val of feature
+            value_count = np.sum(feature_values == value)
+            feature_counts[value] = value_count /len(feature_values)
         return feature_counts
 
     def predict(self, X_test):
