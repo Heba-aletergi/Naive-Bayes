@@ -58,6 +58,7 @@ class NaiveBayesClassifier:
 
     def predict(self, X_test):
         predictions = []
+        prop_class = {}
         x = np.array(X_test)
 
         for instance in x:
@@ -76,7 +77,9 @@ class NaiveBayesClassifier:
                 probs_outcome[class_label] = posterior
 
             predict_class = max(probs_outcome, key = lambda x: probs_outcome[x]) # compare and get class of hieghts value
+            
             predictions.append(predict_class)
+
             #predicted_class = np.argmax(likelihoods)
             #predictions.append(predicted_class)
 
@@ -97,7 +100,7 @@ def test():
     y_test = data[data.columns[1]]
 
     # Make prediction on test data 
-    predictions = clf.predict(x_train.iloc[:, 1:])
+    predictions = clf.predict(x_test.iloc[:, 1:])
 
 if __name__ == '__main__':
   test()
