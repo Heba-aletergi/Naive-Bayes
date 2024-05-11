@@ -58,12 +58,12 @@ class NaiveBayesClassifier:
 
     def predict(self, X_test):
         predictions = []
-        prop_class = {}
+        outcome_probs = []
         x = np.array(X_test)
 
         for instance in x:
             probs_outcome = {}
-            likelihoods = []
+
             likelihood = 1
             feature_prior = 1
             #for class_prob, class_label in enumerate(self.class_probabilities):
@@ -77,13 +77,13 @@ class NaiveBayesClassifier:
                 probs_outcome[class_label] = posterior
 
             predict_class = max(probs_outcome, key = lambda x: probs_outcome[x]) # compare and get class of hieghts value
-            
+            outcome_probs.append(list(probs_outcome.values()))  
             predictions.append(predict_class)
 
             #predicted_class = np.argmax(likelihoods)
             #predictions.append(predicted_class)
 
-        return predictions
+        return predictions, outcome_probs
 
 def test():
     #y_train = np.array(['A','B','B','A','B','A','A','B','B'])
@@ -100,7 +100,8 @@ def test():
     y_test = data[data.columns[1]]
 
     # Make prediction on test data 
-    predictions = clf.predict(x_test.iloc[:, 1:])
+    predictions, outcome_probs = clf.predict(x_test.iloc[:, 1:])
+    print()
 
 if __name__ == '__main__':
   test()
