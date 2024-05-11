@@ -84,24 +84,3 @@ class NaiveBayesClassifier:
             #predictions.append(predicted_class)
 
         return predictions, outcome_probs
-
-def test():
-    #y_train = np.array(['A','B','B','A','B','A','A','B','B'])
-    data = pd.read_csv('breast-cancer-training.csv')
-    x_train = data.drop(data.columns[1], axis=1)
-    y_train = data[data.columns[1]]
-    
-    clf = NaiveBayesClassifier()
-    clf.train(x_train.iloc[:, 1:], y_train.values)
-
-    # Pre-pared test data 
-    data = pd.read_csv('breast-cancer-test.csv')
-    x_test = data.drop(data.columns[1], axis=1)
-    y_test = data[data.columns[1]]
-
-    # Make prediction on test data 
-    predictions, outcome_probs = clf.predict(x_test.iloc[:, 1:])
-    print()
-
-if __name__ == '__main__':
-  test()
